@@ -152,36 +152,36 @@ function git_prompt_status() {
   emulate -L zsh
 
   local INDEX STATUS
-  INDEX=$(__git_prompt_git status --porcelain -b 2> /dev/null) || return 0
+  INDEX=$(__git_prompt_git status --porcelain=v2 -b 2> /dev/null) || return 0
   STATUS=""
-  if [[ "${INDEX}" =~ $'(^|\n)\\?\\? ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)\\? ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_UNTRACKED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)(A |M |MM) ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)1 (A\.|M\.|MM) ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_ADDED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)([ AM]M| T) ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)1 ([.AM]M|\.T) ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)R  ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)2 ..' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_RENAMED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)([A ]D|D ) ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)1 ([A.]D|D\.) ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
   fi
   if $(__git_prompt_git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS="$ZSH_THEME_GIT_PROMPT_STASHED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)UU ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)u .. ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_UNMERGED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)## [^ ]\+ .*ahead' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)# branch.ab \+([1-9]+) -([0-9]+)' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_AHEAD$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)## [^ ]\+ .*behind' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)# branch.ab \+([0-9]+) -([1-9]+)' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_BEHIND$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)## [^ ]\+ .*diverged' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)# branch.ab \+([1-9]+) -([1-9]+)' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_DIVERGED$STATUS"
   fi
   echo $STATUS
