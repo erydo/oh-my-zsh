@@ -157,10 +157,10 @@ function git_prompt_status() {
   if [[ "${INDEX}" =~ $'(^|\n)\\? ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_UNTRACKED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)1 (A\.|M\.|MM) ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)1 (A\.|M\.|MM) N\.\.\.' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_ADDED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)1 ([.AM]M|\.T) ' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)1 ([.AM]M|\.T) N\.\.\.' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_MODIFIED$STATUS"
   fi
   if [[ "${INDEX}" =~ $'(^|\n)2 ..' ]]; then
@@ -169,19 +169,28 @@ function git_prompt_status() {
   if [[ "${INDEX}" =~ $'(^|\n)1 ([A.]D|D\.) ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
   fi
+  if [[ "${INDEX}" =~ $'(^|\n)1 .. SC..' ]]; then
+    STATUS="$ZSH_THEME_GIT_PROMPT_SUBMODULE_HAS_COMMIT$STATUS"
+  fi
+  if [[ "${INDEX}" =~ $'(^|\n)1 .. S..U' ]]; then
+    STATUS="$ZSH_THEME_GIT_PROMPT_SUBMODULE_HAS_UNTRACKED$STATUS"
+  fi
+  if [[ "${INDEX}" =~ $'(^|\n)1 .. S.M.' ]]; then
+    STATUS="$ZSH_THEME_GIT_PROMPT_SUBMODULE_HAS_MODIFIED$STATUS"
+  fi
   if $(__git_prompt_git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS="$ZSH_THEME_GIT_PROMPT_STASHED$STATUS"
   fi
   if [[ "${INDEX}" =~ $'(^|\n)u .. ' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_UNMERGED$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)# branch.ab \+([1-9]+) -([0-9]+)' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)# branch\.ab \+([1-9]+) -([0-9]+)' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_AHEAD$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)# branch.ab \+([0-9]+) -([1-9]+)' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)# branch\.ab \+([0-9]+) -([1-9]+)' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_BEHIND$STATUS"
   fi
-  if [[ "${INDEX}" =~ $'(^|\n)# branch.ab \+([1-9]+) -([1-9]+)' ]]; then
+  if [[ "${INDEX}" =~ $'(^|\n)# branch\.ab \+([1-9]+) -([1-9]+)' ]]; then
     STATUS="$ZSH_THEME_GIT_PROMPT_DIVERGED$STATUS"
   fi
   echo $STATUS
