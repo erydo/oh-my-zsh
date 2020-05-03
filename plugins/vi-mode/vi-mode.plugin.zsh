@@ -8,8 +8,7 @@
 #
 # (The default is not to reset, unless we're showing the mode in RPS1).
 typeset -g VI_MODE_RESET_PROMPT_ON_MODE_CHANGE
-
-VI_KEYMAP=main
+typeset -g VI_KEYMAP=main
 
 function _vi-mode-set-cursor-shape-for-keymap() {
   # https://vt100.net/docs/vt510-rm/DECSCUSR
@@ -30,7 +29,7 @@ function _vi-mode-set-cursor-shape-for-keymap() {
 # Updates editor information when the keymap changes.
 function zle-keymap-select() {
   # update keymap variable for the prompt
-  VI_KEYMAP=$KEYMAP
+  typeset -g VI_KEYMAP=$KEYMAP
 
   if [ "${VI_MODE_RESET_PROMPT_ON_MODE_CHANGE:-}" = true ]; then
     zle reset-prompt
@@ -43,7 +42,7 @@ zle -N zle-keymap-select
 # These "echoti" statements were originally set in lib/key-bindings.zsh
 # Not sure the best way to extend without overriding.
 function zle-line-init() {
-  VI_KEYMAP=main
+  typeset -g VI_KEYMAP=main
   (( ! ${+terminfo[smkx]} )) || echoti smkx
   _vi-mode-set-cursor-shape-for-keymap "${VI_KEYMAP}"
 }
@@ -99,6 +98,19 @@ if [[ "${terminfo[khome]}" != "" ]]; then
 fi
 if [[ "${terminfo[kend]}" != "" ]]; then
   bindkey "${terminfo[kend]}"  end-of-line            # [End] - Go to end of line
+fi
+
+if [[ "${terminfo[kcbt]}" != "" ]]; then
+  bindkey "${terminfo[kcbt]}" reverse-menu-complete   # [Shift-Tab] - move through the completion menu backwards
+fi
+
+bindkey '^?' backward-delete-char                     # [Backspace] - delete backward
+if [[ "${terminfo[kdch1]}" != "" ]]; then
+  bindkey "${terminfo[kdch1]}" delete-char            # [Delete] - delete forward
+else
+  bindkey "^[[3~" delete-char
+  bindkey "^[3;5~" delete-char
+  bindkey "\e[3~" delete-char
 fi
 
 () {
