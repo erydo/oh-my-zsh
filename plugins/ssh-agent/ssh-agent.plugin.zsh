@@ -1,6 +1,7 @@
 typeset _agent_forwarding _ssh_env_cache
 
 function _start_agent() {
+	emulate -L zsh
 	local lifetime
 	zstyle -s :omz:plugins:ssh-agent lifetime lifetime
 
@@ -12,6 +13,7 @@ function _start_agent() {
 }
 
 function _add_identities() {
+	emulate -L zsh
 	local id line sig lines
 	local -a identities loaded_sigs loaded_ids not_loaded
 	zstyle -a :omz:plugins:ssh-agent identities identities
